@@ -9,3 +9,9 @@ Quickly add dimensions and set color of objects.
 
 # Print to PDF
 Save the paper space layout with four different views to a PDF file for quick sharing.
+
+
+# Video
+
+# PDF Result
+ https://i.imgur.com/0JX0w0w.png
