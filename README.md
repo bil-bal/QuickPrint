@@ -1,6 +1,5 @@
 # QuickPrint
-Autocad Plugin to quickly create a PDF file from a model with different views.
-
+Autocad 2021 Plugin to quickly create a PDF file from a model with different views.
 
 # Activate and toggle between viewports
 Split up one viewport into four with top, front, right and isometric view. Add viewports to paper space.
