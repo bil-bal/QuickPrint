@@ -352,7 +352,7 @@ namespace QuickPrint
                 writer.WriteLine(dsdObj.CreateDSDEntry());
                 writer.WriteLine("[Target]");
                 writer.WriteLine("Type=6");
-                writer.WriteLine("DWF=d:\\QuickPrint.pdf");
+                writer.WriteLine("DWF=d:\\Autocad Prints\\QuickPrint.pdf");
                 writer.WriteLine("OUT=d:\\");
                 writer.WriteLine("PWD=");
             }
