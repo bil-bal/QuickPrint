@@ -17,6 +17,7 @@ namespace QuickPrint
     public class QuickPrintUtil
     {
         private static QuickPrintUI menu = null;
+        private static short FirstViewPort { get; set; }
 
         [CommandMethod("qp")]
         public static void QuickPrint()
@@ -47,7 +48,10 @@ namespace QuickPrint
 
             if (layoutManager.LayoutExists("QuickView"))
             {
-                layoutManager.CurrentLayout = "QuickView";
+                layoutManager.CurrentLayout = "Model";
+                short FirstViewPort = (short) Application.GetSystemVariable("CVPORT");
+                Application.SetSystemVariable("CVPORT", FirstViewPort);
+                ed.Command("-vports", "toggle");
                 return;
             }
 
@@ -60,6 +64,8 @@ namespace QuickPrint
 
                     BlockTable bTable = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
                     BlockTableRecord bTableRec = trans.GetObject(bTable[BlockTableRecord.PaperSpace], OpenMode.ForWrite) as BlockTableRecord;
+
+                    FirstViewPort = System.Convert.ToInt16(vportTableRec.Number);
 
                     vportTableRec.LowerLeftCorner = new Point2d(0.5, 0.5);
                     vportTableRec.UpperRightCorner = new Point2d(1, 1);
@@ -95,13 +101,13 @@ namespace QuickPrint
                             Application.SetSystemVariable("CVPORT", vpTR.Number);
 
                             ed.Command("_.zoom", "_extents");
+                            ed.Command("_.zoom", "_scale", "0.7x");
+                            //using (ViewTableRecord vTableRec = ed.GetCurrentView())
+                            //{
+                            //Point3d pCenter = new Point3d(vTableRec.CenterPoint.X, vTableRec.CenterPoint.Y, 0);
 
-                            using (ViewTableRecord vTableRec = ed.GetCurrentView())
-                            {
-                                Point3d pCenter = new Point3d(vTableRec.CenterPoint.X, vTableRec.CenterPoint.Y, 0);
-
-                                ed.Command("_.zoom", "_scale", "0.7x");
-                            }
+                            //ed.Command("_.zoom", "_scale", "0.7x");
+                            //}
                         }
                     }
 
@@ -174,6 +180,8 @@ namespace QuickPrint
                     trans.Commit();
                 }
             }
+
+            menu._quickViewButton.Text = "Toggle viewport";
         }
 
         [CommandMethod("SetColor", CommandFlags.UsePickSet)]
@@ -352,10 +360,9 @@ namespace QuickPrint
             FileInfo fi = new FileInfo("D:\\QuickPrint.dsd");
             if (fi.Length > 0)
             {
-                //ed.WriteMessage($"{fi.FullName}\n");
                 Application.SetSystemVariable("FILEDIA", 0);
                 doc.SendStringToExecute($"-publish {fi.FullName}\n", true, false, false);
-                //Application.Publisher.AboutToEndPublishing += new AboutToEndPublishingEventHandler(Publisher_AboutToEndPublishing);
+
                 Application.Publisher.AboutToBeginBackgroundPublishing += Publisher_AboutToBeginBackgroundPublishing;
             }
         }

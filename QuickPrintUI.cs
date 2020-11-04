@@ -15,11 +15,13 @@ namespace QuickPrint
     {
         public Document doc { get; set; } = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument;
         public TextBox _colorBox { get; set; }
+        public Button _quickViewButton { get; set; }
         public QuickPrintUI()
         {
             InitializeComponent();
             this.TopMost = true;
             _colorBox = colorBox;
+            _quickViewButton = quickViewButton;
             colorBox.BackColor = Color.White;
             colorBox.ReadOnly = true;
             colorBox.Cursor = Cursors.Arrow;
