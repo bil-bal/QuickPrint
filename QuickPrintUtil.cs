@@ -72,6 +72,10 @@ namespace QuickPrint
 
                     vportTableRec.ViewDirection = new Vector3d(Math.Sqrt(1.0 / 3.0), -Math.Sqrt(1.0 / 3.0), Math.Sqrt(1.0 / 3.0));
 
+                    DBDictionary dict = trans.GetObject(db.VisualStyleDictionaryId, OpenMode.ForRead) as DBDictionary;
+
+                    vportTableRec.VisualStyleId = dict.GetAt("2DWireframe");
+
                     for (int i = 0; i < 3; i++)
                     {
                         using (ViewportTableRecord vportTableRecNew = new ViewportTableRecord())
@@ -95,19 +99,12 @@ namespace QuickPrint
                     {
                         ViewportTableRecord vpTR = trans.GetObject(vp, OpenMode.ForRead) as ViewportTableRecord;
 
-
                         if (vpTR.Name == "*Active")
                         {
                             Application.SetSystemVariable("CVPORT", vpTR.Number);
 
                             ed.Command("_.zoom", "_extents");
                             ed.Command("_.zoom", "_scale", "0.7x");
-                            //using (ViewTableRecord vTableRec = ed.GetCurrentView())
-                            //{
-                            //Point3d pCenter = new Point3d(vTableRec.CenterPoint.X, vTableRec.CenterPoint.Y, 0);
-
-                            //ed.Command("_.zoom", "_scale", "0.7x");
-                            //}
                         }
                     }
 
@@ -131,16 +128,20 @@ namespace QuickPrint
                         if (vp != null && count != 0)
                         {
                             vp.UpgradeOpen();
+
                             vp.Height = layout.PlotPaperSize.X * 0.4;
                             vp.Width = layout.PlotPaperSize.Y * 0.4;
 
                             vp.CenterPoint = new Point3d(layout.PlotPaperSize.Y * 0.75, layout.PlotPaperSize.X * 0.75, 0); vp.SetViewDirection(OrthographicView.NonOrthoView);
 
                             vp.ViewDirection = new Vector3d(Math.Sqrt(1.0 / 3.0), -Math.Sqrt(1.0 / 3.0), Math.Sqrt(1.0 / 3.0));
+                            
                             vp.GridOn = false;
 
                             ed.SwitchToModelSpace();
+
                             ed.Command("_.zoom", "_scale", "0.7x");
+
                             ed.SwitchToPaperSpace();
                         }
 
@@ -367,7 +368,15 @@ namespace QuickPrint
                 
                 Application.Publisher.AboutToBeginPublishing += Publisher_AboutToBeginPublishing;
                 Application.Publisher.EndPublish += Publisher_EndPublish;
+                Application.Publisher.CancelledOrFailedPublishing += Publisher_CancelledOrFailedPublishing;
             }
+        }
+
+        private static void Publisher_CancelledOrFailedPublishing(object sender, PublishEventArgs e)
+        {
+            menu._printButton.Enabled = true;
+
+            Application.SetSystemVariable("BACKGROUNDPLOT", 2);
         }
 
         private static void Publisher_EndPublish(object sender, PublishEventArgs e)
