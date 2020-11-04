@@ -49,7 +49,7 @@ namespace QuickPrint
             if (layoutManager.LayoutExists("QuickView"))
             {
                 layoutManager.CurrentLayout = "Model";
-                short FirstViewPort = (short) Application.GetSystemVariable("CVPORT");
+                FirstViewPort = (short) Application.GetSystemVariable("CVPORT");
                 Application.SetSystemVariable("CVPORT", FirstViewPort);
                 ed.Command("-vports", "toggle");
                 return;
@@ -361,16 +361,27 @@ namespace QuickPrint
             if (fi.Length > 0)
             {
                 Application.SetSystemVariable("FILEDIA", 0);
+                Application.SetSystemVariable("BACKGROUNDPLOT", 0);
                 doc.SendStringToExecute($"-publish {fi.FullName}\n", true, false, false);
 
-                Application.Publisher.AboutToBeginBackgroundPublishing += Publisher_AboutToBeginBackgroundPublishing;
+                
+                Application.Publisher.AboutToBeginPublishing += Publisher_AboutToBeginPublishing;
+                Application.Publisher.EndPublish += Publisher_EndPublish;
             }
         }
 
-        private static void Publisher_AboutToBeginBackgroundPublishing(object sender, AboutToBeginBackgroundPublishingEventArgs e)
+        private static void Publisher_EndPublish(object sender, PublishEventArgs e)
+        {
+            menu._printButton.Enabled = true;
+            
+            Application.SetSystemVariable("BACKGROUNDPLOT", 2);
+        }
+
+        private static void Publisher_AboutToBeginPublishing(object sender, AboutToBeginPublishingEventArgs e)
         {
             Application.DocumentManager.MdiActiveDocument.Editor.WriteMessage("About to begin publishing\n");
             Application.SetSystemVariable("FILEDIA", 1);
+            menu._printButton.Enabled = false;
         }
     }
 }
