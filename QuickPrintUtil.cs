@@ -182,7 +182,7 @@ namespace QuickPrint
                 }
             }
 
-            menu._quickViewButton.Text = "Toggle viewport";
+            menu.QuickViewButton.Text = "Toggle viewport";
         }
 
         [CommandMethod("SetColor", CommandFlags.UsePickSet)]
@@ -212,7 +212,7 @@ namespace QuickPrint
 
                             if (ent != null)
                             {
-                                ent.Color = Autodesk.AutoCAD.Colors.Color.FromColor(menu._colorBox.BackColor);
+                                ent.Color = Autodesk.AutoCAD.Colors.Color.FromColor(menu.ColorBox.BackColor);
                             }
                         }
                     }
@@ -233,7 +233,7 @@ namespace QuickPrint
 
                                 if (ent != null)
                                 {
-                                    ent.Color = Autodesk.AutoCAD.Colors.Color.FromColor(menu._colorBox.BackColor);
+                                    ent.Color = Autodesk.AutoCAD.Colors.Color.FromColor(menu.ColorBox.BackColor);
                                 }
                             }
                         }
@@ -374,14 +374,14 @@ namespace QuickPrint
 
         private static void Publisher_CancelledOrFailedPublishing(object sender, PublishEventArgs e)
         {
-            menu._printButton.Enabled = true;
+            menu.PrintButton.Enabled = true;
 
             Application.SetSystemVariable("BACKGROUNDPLOT", 2);
         }
 
         private static void Publisher_EndPublish(object sender, PublishEventArgs e)
         {
-            menu._printButton.Enabled = true;
+            menu.PrintButton.Enabled = true;
             
             Application.SetSystemVariable("BACKGROUNDPLOT", 2);
         }
@@ -390,7 +390,7 @@ namespace QuickPrint
         {
             Application.DocumentManager.MdiActiveDocument.Editor.WriteMessage("About to begin publishing\n");
             Application.SetSystemVariable("FILEDIA", 1);
-            menu._printButton.Enabled = false;
+            menu.PrintButton.Enabled = false;
         }
     }
 }
